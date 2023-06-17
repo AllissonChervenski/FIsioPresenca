@@ -9,10 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Confirmation } from './entities/confirmation.entity';
 import { CreateConfirmationDto } from './dto/create-confirmation.dto';
-import {
-  RegisteredUsers,
-  UserRoles,
-} from '../users/entities/RegisteredUsers.entity';
+import { RegisteredUsers } from '../users/entities/RegisteredUsers.entity';
 
 @Injectable()
 export class ConfirmationService {

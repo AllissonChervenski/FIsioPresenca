@@ -1,7 +1,9 @@
 import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from './entities/patient.entity';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('paciente')
 @Controller('paciente')
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}

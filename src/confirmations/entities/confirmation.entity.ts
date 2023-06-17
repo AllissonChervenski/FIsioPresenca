@@ -26,13 +26,9 @@ export class Confirmation {
   @Column({ name: 'confirmation_status' })
   confirmationstatus: boolean;
 
-  @ManyToOne(() => RegisteredUsers)
-  @JoinColumn({ name: 'user_id' })
-  user1: RegisteredUsers;
-
-  @ManyToMany(() => RegisteredUsers)
+  @ManyToMany(() => RegisteredUsers, (user) => user.confirmations)
   @JoinTable({
-    name: 'confirmation_users',
+    name: 'user_confirmation',
     joinColumn: { name: 'confirmation_id', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
   })

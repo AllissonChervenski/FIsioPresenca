@@ -11,12 +11,7 @@ import {
   ManyToMany,
 } from 'typeorm';
 import { Patient } from '../patient/entities/patient.entity';
-
-export enum UserRoles {
-  user = 'user',
-  admin = 'admin',
-  profissional = 'profissional',
-}
+import { Professional } from '../professional/entities/professional.entity';
 
 @Entity({ name: 'registered_users' })
 export class RegisteredUsers extends BaseEntity {
@@ -29,18 +24,15 @@ export class RegisteredUsers extends BaseEntity {
   @Column()
   password: string;
 
-  @Column({
-    type: 'enum',
-    enum: UserRoles,
-    default: UserRoles.user,
-  })
-  role: UserRoles;
-
   @OneToOne(() => Patient)
   @JoinColumn({ name: 'cod_patient' })
   patient: Patient;
 
-  @ManyToMany(() => Confirmation)
+  /*@OneToOne(() => Professional)
+  @JoinColumn({ name: 'cod_professional' })
+  professional: Professional;
+*/
+  @ManyToMany(() => Confirmation, (confirmation) => confirmation.users)
   @JoinTable({
     name: 'user_confirmation',
     joinColumn: { name: 'user_id', referencedColumnName: 'id' },
