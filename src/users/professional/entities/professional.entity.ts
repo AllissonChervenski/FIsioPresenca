@@ -1,4 +1,3 @@
-import { RegisteredUsers } from 'src/users/entities/RegisteredUsers.entity';
 import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
 
 @Entity({ name: 'profissional' })
@@ -18,6 +17,9 @@ export class Professional {
   @Column({ name: 'DESCRICAO', type: 'text' })
   descricao: string;
 
-  @OneToOne(() => RegisteredUsers, (user) => user.patient)
+  /*
+   @OneToOne(() => RegisteredUsers)
+  @JoinColumn({ name: 'funcao_id', referencedColumnName: 'funcao_id' })
   registeredUser: RegisteredUsers;
+   */
 }

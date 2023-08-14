@@ -8,6 +8,8 @@ import { ConfirmationModule } from 'src/confirmations/confirmation.module';
 import { Confirmation } from 'src/confirmations/entities/confirmation.entity';
 import { Patient } from '../users/patient/entities/patient.entity';
 import { PatientModule } from 'src/users/patient/patient.module';
+import { Professional } from '../users/professional/entities/professional.entity';
+import { ProfessionalModule } from '../users/professional/professional.module';
 
 @Module({
   imports: [
@@ -18,12 +20,13 @@ import { PatientModule } from 'src/users/patient/patient.module';
       username: 'user',
       password: 'user',
       database: 'cerestdb',
-      entities: [RegisteredUsers, Confirmation, Patient],
+      entities: [RegisteredUsers, Confirmation, Patient, Professional],
       synchronize: false,
     }),
     UsersModule,
     ConfirmationModule,
     PatientModule,
+    ProfessionalModule,
   ],
   controllers: [AppController],
   providers: [AppService],

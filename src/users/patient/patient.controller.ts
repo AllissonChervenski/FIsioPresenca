@@ -1,7 +1,15 @@
-import { Controller, Get, Param, NotFoundException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  NotFoundException,
+  Post,
+  Body,
+} from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from './entities/patient.entity';
 import { ApiTags } from '@nestjs/swagger';
+import { CreatePatientDto } from './dto/create-patient.dto';
 
 @ApiTags('paciente')
 @Controller('paciente')
@@ -62,5 +70,15 @@ export class PatientController {
     } catch (error) {
       throw new NotFoundException(error.message);
     }
+  }
+
+  @Post('create')
+  async createPatient(
+    @Body() createPatientDto: CreatePatientDto,
+  ): Promise<Patient> {
+    const createdPatient = await this.patientService.createPatient(
+      createPatientDto,
+    );
+    return createdPatient;
   }
 }

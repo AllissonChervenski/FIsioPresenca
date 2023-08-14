@@ -245,22 +245,6 @@ export class PatientService {
     return patients;
   }
 
-  async findPatientsByNationality(nationality: string): Promise<Patient[]> {
-    const patients = await this.patientRepository.find({
-      where: {
-        naturalidade: nationality,
-      },
-    });
-
-    if (!patients || patients.length === 0) {
-      throw new NotFoundException(
-        'Nenhum paciente encontrado com a nacionalidade fornecida.',
-      );
-    }
-
-    return patients;
-  }
-
   async updatePatient(
     codigo: string,
     updatePatientDto: UpdatePatientDto,

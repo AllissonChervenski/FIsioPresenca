@@ -1,5 +1,5 @@
 import { RegisteredUsers } from 'src/users/entities/RegisteredUsers.entity';
-import { ChildEntity, Entity, OneToOne, PrimaryColumn } from 'typeorm';
+import { Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
 
 @Entity({ name: 'paciente' })
@@ -58,6 +58,9 @@ export class Patient {
   @Column({ name: 'obs' })
   obs: string;
 
-  @OneToOne(() => RegisteredUsers, (user) => user.patient)
+  /*
+  @OneToOne(() => RegisteredUsers)
+  @JoinColumn({ name: 'funcao_id', referencedColumnName: 'funcao_id' })
   registeredUser: RegisteredUsers;
+   */
 }

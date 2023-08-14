@@ -10,23 +10,37 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RegisteredUsers } from './entities/RegisteredUsers.entity';
 import * as bcrypt from 'bcryptjs';
+import { Professional } from './professional/entities/professional.entity';
+import { Patient } from './patient/entities/patient.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(RegisteredUsers)
     private readonly userRepository: Repository<RegisteredUsers>,
+    @InjectRepository(Professional)
+    private professionalRepository: Repository<Professional>,
+    @InjectRepository(Patient)
+    private patientRepository: Repository<Patient>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<RegisteredUsers> {
-    const { email, password } = createUserDto;
+    const { funcao_id, email, password } = createUserDto;
 
     try {
       const hashedPassword = await this.hashPassword(password);
-
+      const funcao = await this.getFuncaoById(funcao_id);
+      const objId = (): string => {
+        if (funcao instanceof Professional) {
+          return funcao.cod.toString();
+        } else if (funcao instanceof Patient) {
+          return funcao.codigo;
+        }
+      };
       const user = this.userRepository.create({
         email,
         password: hashedPassword,
+        funcao_id: objId(),
       });
 
       await this.userRepository.save(user);
@@ -42,9 +56,61 @@ export class UsersService {
     }
   }
 
+  private async getFuncaoById(funcaoId: string): Promise<any> {
+    const containsOnlyNumbers = (str: string): boolean => {
+      const regex = /^[0-9]+$/;
+      return regex.test(str);
+    };
+
+    if (containsOnlyNumbers(funcaoId)) {
+      const professional = await this.professionalRepository.findOne({
+        where: { cod: parseInt(funcaoId, 10) },
+      });
+      if (professional) {
+        return professional;
+      }
+    }
+    const patient = await this.patientRepository.findOne({
+      where: { codigo: funcaoId },
+    });
+    if (patient) {
+      return patient;
+    }
+
+    throw new NotFoundException('Função não encontrada');
+  }
+
   async findAll(): Promise<RegisteredUsers[]> {
+    /*
     try {
       return this.userRepository.find();
+    } catch (error) {
+      throw new InternalServerErrorException('Falha ao buscar os usuários');
+    }
+     */
+    try {
+      return this.userRepository
+        .createQueryBuilder('registered_users')
+        .leftJoinAndSelect('registered_users.confirmations', 'confirmations')
+        .addSelect(
+          'CASE WHEN registered_users.funcao_id IS NOT NULL THEN "paciente" ELSE "profissional" END',
+          'funcao',
+        )
+        .leftJoinAndMapOne(
+          'registered_users.funcao',
+          'paciente',
+          'paciente',
+          'registered_users.funcao_id = paciente.CODIGO',
+          { funcao: 'paciente' },
+        )
+        .leftJoinAndMapOne(
+          'registered_users.funcao',
+          'profissional',
+          'profissional',
+          'registered_users.funcao_id = profissional.cod',
+          { funcao: 'profissional' },
+        )
+        .getMany();
     } catch (error) {
       throw new InternalServerErrorException('Falha ao buscar os usuários');
     }
@@ -78,7 +144,7 @@ export class UsersService {
     id: number,
     updateUserDto: UpdateUserDto,
   ): Promise<RegisteredUsers> {
-    const { email, password } = updateUserDto;
+    const { funcao_id, email, password } = updateUserDto;
 
     const user = await this.userRepository.findOne({ where: { id } });
 
@@ -94,6 +160,21 @@ export class UsersService {
     if (password) {
       const hashedPassword = await this.hashPassword(password);
       user.password = hashedPassword;
+    }
+
+    //attach func to user
+    const professional = await this.professionalRepository.findOne({
+      where: { cod: parseInt(funcao_id, 10) },
+    });
+    if (professional) {
+      user.funcao_id = funcao_id;
+    }
+
+    const patient = await this.patientRepository.findOne({
+      where: { codigo: funcao_id },
+    });
+    if (patient) {
+      user.funcao_id = funcao_id;
     }
 
     try {

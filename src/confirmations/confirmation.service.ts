@@ -23,27 +23,35 @@ export class ConfirmationService {
   async createConfirmation(
     createConfirmationDto: CreateConfirmationDto,
   ): Promise<Confirmation> {
+    const { user_id, ...confirmationData } = createConfirmationDto;
+
+    const user = await this.userRepository.findOne({ where: { id: user_id } });
+
+    if (!user) {
+      throw new NotFoundException('Usuário não encontrado');
+    }
+
+    const confirmation = this.confirmationRepository.create({
+      ...confirmationData,
+      users: [user],
+    });
     try {
-      const { user_id, ...confirmationData } = createConfirmationDto;
-      const id = user_id;
-      const user = await this.userRepository.findOne({ where: { id } });
+      await this.confirmationRepository.manager
+        .createQueryBuilder()
+        .insert()
+        .into(Confirmation)
+        .values({
+          patientname: confirmation.patientname,
+          arrivaltime: confirmation.arrivaltime,
+          appointmenttime: confirmation.appointmenttime,
+          confirmationstatus: confirmation.confirmationstatus,
+          users: [{ id: user_id }],
+        })
+        .execute();
 
-      if (!user) {
-        throw new NotFoundException('Usuário não encontrado');
-      }
-
-      const confirmation = this.confirmationRepository.create({
-        ...confirmationData,
-        users: [user], // Associa o objeto User à propriedade 'users' da entidade Confirmation
-      });
-
-      const createdConfirmation = await this.confirmationRepository.save(
-        confirmation,
-      );
-      return createdConfirmation;
+      return confirmation;
     } catch (error) {
       if (error.code === '23505') {
-        // Código de erro para violação de chave única (Unique Constraint Violation)
         throw new ConflictException('A confirmação já existe');
       } else {
         throw new InternalServerErrorException('Falha ao criar confirmação');
@@ -52,17 +60,13 @@ export class ConfirmationService {
   }
 
   async getConfirmationById(id: number): Promise<Confirmation> {
-    try {
-      const confirmation = await this.confirmationRepository.findOne({
-        where: { id },
-      });
-      if (!confirmation) {
-        throw new NotFoundException('Confirmação não encontrada');
-      }
-      return confirmation;
-    } catch (error) {
-      throw new InternalServerErrorException('Falha ao buscar as confirmações');
+    const confirmation = await this.confirmationRepository.findOne({
+      where: { id },
+    });
+    if (!confirmation) {
+      throw new NotFoundException('Confirmação não encontrada');
     }
+    return confirmation;
   }
 
   async getAllConfirmations(): Promise<Confirmation[]> {
@@ -105,24 +109,41 @@ export class ConfirmationService {
   }
 
   async deleteConfirmation(id: number): Promise<void> {
+    const confirmation = await this.confirmationRepository.findOne({
+      where: { id },
+    });
+
+    if (!confirmation) {
+      throw new NotFoundException('Confirmação não encontrada');
+    }
+    const currentTime = new Date();
+    const appointmentTime = new Date(confirmation.appointmenttime);
+    const timeDifference = currentTime.getTime() - appointmentTime.getTime();
+    const minutesDifference = Math.floor(timeDifference / 1000 / 60);
+
+    if (minutesDifference <= 30) {
+      throw new ForbiddenException(
+        'Não é possível cancelar a confirmação com menos de 30 minutos de antecedência',
+      );
+    }
     try {
-      const confirmation = await this.confirmationRepository.findOne({
-        where: { id },
-      });
-      if (!confirmation) {
-        throw new NotFoundException('Confirmação não encontrada');
-      }
-      const currentTime = new Date();
-      const timeDifference =
-        confirmation.appointmenttime.getTime() - currentTime.getTime();
-      const minutesDifference = Math.floor(timeDifference / 1000 / 60);
-      if (minutesDifference < 30) {
-        throw new ForbiddenException(
-          'Não é possível cancelar a confirmação com menos de 30 minutos de antecedência',
+      await this.confirmationRepository.manager
+        .createQueryBuilder()
+        .delete()
+        .from(Confirmation)
+        .where('id = :id', { id: confirmation.id })
+        .execute();
+      await this.confirmationRepository.remove(confirmation);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error.message;
+      } else if (error instanceof ForbiddenException) {
+        throw error.message;
+      } else {
+        throw new InternalServerErrorException(
+          'Não foi possível deletar a confirmação',
         );
       }
-    } catch (error) {
-      throw new InternalServerErrorException('Falha em deletar a confirmação');
     }
   }
 }

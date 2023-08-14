@@ -3,13 +3,11 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToOne,
-  JoinColumn,
-  JoinTable,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
-@Entity()
+@Entity({ name: 'confirmation' })
 export class Confirmation {
   @PrimaryGeneratedColumn()
   id: number;
@@ -29,8 +27,8 @@ export class Confirmation {
   @ManyToMany(() => RegisteredUsers, (user) => user.confirmations)
   @JoinTable({
     name: 'user_confirmation',
-    joinColumn: { name: 'confirmation_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    joinColumns: [{ name: 'confirmation_id', referencedColumnName: 'id' }],
+    inverseJoinColumns: [{ name: 'user_id', referencedColumnName: 'id' }],
   })
   users: RegisteredUsers[];
 }

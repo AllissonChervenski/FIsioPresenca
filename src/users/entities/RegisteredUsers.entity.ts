@@ -5,10 +5,10 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   BaseEntity,
-  JoinColumn,
-  OneToOne,
   JoinTable,
   ManyToMany,
+  OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Patient } from '../patient/entities/patient.entity';
 import { Professional } from '../professional/entities/professional.entity';
@@ -24,14 +24,9 @@ export class RegisteredUsers extends BaseEntity {
   @Column()
   password: string;
 
-  @OneToOne(() => Patient)
-  @JoinColumn({ name: 'cod_patient' })
-  patient: Patient;
+  //@OneToMany(() => Professional, (professional) => professional.user)
+  //professionals: Professional[];
 
-  /*@OneToOne(() => Professional)
-  @JoinColumn({ name: 'cod_professional' })
-  professional: Professional;
-*/
   @ManyToMany(() => Confirmation, (confirmation) => confirmation.users)
   @JoinTable({
     name: 'user_confirmation',
@@ -39,4 +34,16 @@ export class RegisteredUsers extends BaseEntity {
     inverseJoinColumn: { name: 'confirmation_id', referencedColumnName: 'id' },
   })
   confirmations: Confirmation[];
+
+  @Column({ name: 'funcao_id', nullable: true })
+  funcao_id?: string;
+
+
+  @OneToOne(() => Professional)
+  @JoinColumn({ name: 'funcao_id' })
+  professional: Professional;
+
+  @OneToOne(() => Patient)
+  @JoinColumn({ name: 'funcao_id' })
+  patient: Patient;
 }
