@@ -37,13 +37,4 @@ export class RegisteredUsers extends BaseEntity {
 
   @Column({ name: 'funcao_id', nullable: true })
   funcao_id?: string;
-
-
-  @OneToOne(() => Professional)
-  @JoinColumn({ name: 'funcao_id' })
-  professional: Professional;
-
-  @OneToOne(() => Patient)
-  @JoinColumn({ name: 'funcao_id' })
-  patient: Patient;
 }

@@ -5,15 +5,17 @@ import {
   PrimaryGeneratedColumn,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
+import { Patient } from '../../users/patient/entities/patient.entity';
 
 @Entity({ name: 'confirmation' })
 export class Confirmation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'patient_name' })
-  patientname: string;
+  @ManyToOne(() => Patient, (patient) => patient.confirmations)
+  patient: Patient;
 
   @Column({ name: 'arrival_time' })
   arrivaltime: Date;

@@ -1,6 +1,13 @@
 import { RegisteredUsers } from 'src/users/entities/RegisteredUsers.entity';
-import { Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
+import { Confirmation } from '../../../confirmations/entities/confirmation.entity';
 
 @Entity({ name: 'paciente' })
 export class Patient {
@@ -58,6 +65,8 @@ export class Patient {
   @Column({ name: 'obs' })
   obs: string;
 
+  @OneToMany(() => Confirmation, (confirmation) => confirmation.patient)
+  confirmations: Confirmation[];
   /*
   @OneToOne(() => RegisteredUsers)
   @JoinColumn({ name: 'funcao_id', referencedColumnName: 'funcao_id' })

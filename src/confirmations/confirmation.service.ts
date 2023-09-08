@@ -41,7 +41,7 @@ export class ConfirmationService {
         .insert()
         .into(Confirmation)
         .values({
-          patientname: confirmation.patientname,
+          patient: confirmation.patient,
           arrivaltime: confirmation.arrivaltime,
           appointmenttime: confirmation.appointmenttime,
           confirmationstatus: confirmation.confirmationstatus,
