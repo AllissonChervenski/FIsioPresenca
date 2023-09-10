@@ -16,6 +16,15 @@ import { CreatePatientDto } from './dto/create-patient.dto';
 export class PatientController {
   constructor(private readonly patientService: PatientService) {}
 
+  @Get()
+  async findAll(): Promise<Patient[]> {
+    try {
+      return await this.patientService.findAll();
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
   @Get('code/:codigo')
   async findByCode(@Param('codigo') codigo: string): Promise<Patient> {
     try {

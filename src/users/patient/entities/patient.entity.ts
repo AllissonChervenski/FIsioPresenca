@@ -1,9 +1,7 @@
-import { RegisteredUsers } from 'src/users/entities/RegisteredUsers.entity';
+
 import {
   Entity,
-  JoinColumn,
   OneToMany,
-  OneToOne,
   PrimaryColumn,
 } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
@@ -67,6 +65,10 @@ export class Patient {
 
   @OneToMany(() => Confirmation, (confirmation) => confirmation.patient)
   confirmations: Confirmation[];
+
+  @Column()
+  isActive: boolean;
+
   /*
   @OneToOne(() => RegisteredUsers)
   @JoinColumn({ name: 'funcao_id', referencedColumnName: 'funcao_id' })

@@ -1,17 +1,4 @@
-import { Confirmation } from 'src/confirmations/entities/confirmation.entity';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  BaseEntity,
-  JoinTable,
-  ManyToMany,
-  OneToOne,
-  JoinColumn,
-} from 'typeorm';
-import { Patient } from '../patient/entities/patient.entity';
-import { Professional } from '../professional/entities/professional.entity';
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity } from 'typeorm';
 
 @Entity({ name: 'registered_users' })
 export class RegisteredUsers extends BaseEntity {
@@ -27,6 +14,7 @@ export class RegisteredUsers extends BaseEntity {
   //@OneToMany(() => Professional, (professional) => professional.user)
   //professionals: Professional[];
 
+  /*
   @ManyToMany(() => Confirmation, (confirmation) => confirmation.users)
   @JoinTable({
     name: 'user_confirmation',
@@ -34,6 +22,8 @@ export class RegisteredUsers extends BaseEntity {
     inverseJoinColumn: { name: 'confirmation_id', referencedColumnName: 'id' },
   })
   confirmations: Confirmation[];
+  
+   */
 
   @Column({ name: 'funcao_id', nullable: true })
   funcao_id?: string;

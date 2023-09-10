@@ -21,7 +21,7 @@ import { ProfessionalModule } from '../users/professional/professional.module';
       password: 'user',
       database: 'cerestdb',
       entities: [RegisteredUsers, Confirmation, Patient, Professional],
-      synchronize: false,
+      synchronize: true,
     }),
     UsersModule,
     ConfirmationModule,

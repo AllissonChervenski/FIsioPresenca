@@ -66,6 +66,10 @@ export class PatientService {
     return this.patientRepository.save(patient);
   }
 
+  async findAll(){
+    return this.patientRepository.find();
+  }
+
   async getLastPatientNumberWithSameFirstLetter(
     firstLetter: string,
   ): Promise<number> {
@@ -197,6 +201,9 @@ export class PatientService {
     return patients;
   }
 
+  async save(patient: Patient) {
+    this.patientRepository.save(patient);
+  }
   async findPatientsBySIST(SIST: string): Promise<Patient[]> {
     const patients = await this.patientRepository.find({
       where: {

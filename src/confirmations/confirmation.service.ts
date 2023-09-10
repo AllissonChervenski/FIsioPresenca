@@ -9,23 +9,26 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Confirmation } from './entities/confirmation.entity';
 import { CreateConfirmationDto } from './dto/create-confirmation.dto';
-import { RegisteredUsers } from '../users/entities/RegisteredUsers.entity';
+import { Patient } from '../users/patient/entities/patient.entity';
 
 @Injectable()
 export class ConfirmationService {
   constructor(
     @InjectRepository(Confirmation)
     private readonly confirmationRepository: Repository<Confirmation>,
-    @InjectRepository(RegisteredUsers)
-    private readonly userRepository: Repository<RegisteredUsers>,
+
+    @InjectRepository(Patient)
+    private readonly patientRepository: Repository<Patient>,
   ) {}
 
   async createConfirmation(
     createConfirmationDto: CreateConfirmationDto,
   ): Promise<Confirmation> {
-    const { user_id, ...confirmationData } = createConfirmationDto;
+    const { patientcode, ...confirmationData } = createConfirmationDto;
 
-    const user = await this.userRepository.findOne({ where: { id: user_id } });
+    const user = await this.patientRepository.findOne({
+      where: { codigo: patientcode },
+    });
 
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
@@ -33,7 +36,6 @@ export class ConfirmationService {
 
     const confirmation = this.confirmationRepository.create({
       ...confirmationData,
-      users: [user],
     });
     try {
       await this.confirmationRepository.manager
@@ -45,7 +47,16 @@ export class ConfirmationService {
           arrivaltime: confirmation.arrivaltime,
           appointmenttime: confirmation.appointmenttime,
           confirmationstatus: confirmation.confirmationstatus,
-          users: [{ id: user_id }],
+          codigoProcedimento: confirmation.codigoProcedimento,
+          motivoAtendimento: confirmation.motivoAtendimento,
+          tratamento: confirmation.tratamento,
+          caraterAtendimento: confirmation.caraterAtendimento,
+          cid: confirmation.cid,
+          diagnostico: confirmation.diagnostico,
+          nomeUnidade: confirmation.nomeUnidade,
+          enderecoUnidade: confirmation.enderecoUnidade,
+          municipioUnidade: confirmation.municipioUnidade,
+          ufUnidade: confirmation.ufUnidade,
         })
         .execute();
 

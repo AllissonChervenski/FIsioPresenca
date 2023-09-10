@@ -12,6 +12,7 @@ import { Repository } from 'typeorm';
 import { Professional } from './professional/entities/professional.entity';
 import { Patient } from './patient/entities/patient.entity';
 import { PatientModule } from './patient/patient.module';
+import { PatientService } from './patient/patient.service';
 
 @Module({
   imports: [
@@ -28,7 +29,13 @@ import { PatientModule } from './patient/patient.module';
     PatientModule,
   ],
   controllers: [UserController, AuthController],
-  providers: [UsersService, AuthService, JwtStrategy, Repository],
+  providers: [
+    UsersService,
+    PatientService,
+    AuthService,
+    JwtStrategy,
+    Repository,
+  ],
   exports: [UsersService],
 })
 export class UsersModule {}

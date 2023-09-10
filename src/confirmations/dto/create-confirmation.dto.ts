@@ -3,7 +3,7 @@ import { IsBoolean, IsDateString, IsNotEmpty, IsString } from 'class-validator';
 export class CreateConfirmationDto {
   @IsString()
   @IsNotEmpty()
-  patientname: string;
+  patientcode: string;
 
   @IsDateString()
   @IsNotEmpty()
@@ -17,6 +17,44 @@ export class CreateConfirmationDto {
   @IsNotEmpty()
   confirmationstatus: boolean;
 
+  @IsString()
+  nomeUnidade: string;
+
+  @IsString()
+  enderecoUnidade: string;
+
+  @IsString()
+  municipioUnidade: string;
+
+  @IsString()
+  ufUnidade: string;
+
+  @IsString()
   @IsNotEmpty()
-  user_id: number;
+  codigoProcedimento: string;
+
+  @IsString()
+  motivoAtendimento: string;
+
+  @IsString()
+  tratamento: string;
+
+  @IsString()
+  caraterAtendimento: string;
+
+  @IsString()
+  cid: string;
+
+  @IsString()
+  diagnostico: string;
+
+  /*
+      Código da Tabela de Procedimentos
+      Motivo do Atendimento
+      Tratamento
+      Caráter do Atendimento
+      Cid
+      Diagnóstico
+
+   */
 }

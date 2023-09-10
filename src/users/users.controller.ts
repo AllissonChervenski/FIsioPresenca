@@ -12,10 +12,14 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UsersService } from './users.service';
 import { RegisteredUsers } from './entities/RegisteredUsers.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PatientService } from './patient/patient.service';
 
 @Controller('users')
 export class UserController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly patientService: PatientService,
+  ) {}
 
   @Get('all')
   async findAll(): Promise<RegisteredUsers[]> {
@@ -54,5 +58,14 @@ export class UserController {
   async remove(@Param('id') id: number) {
     await this.usersService.remove(id);
     return { message: 'Usuário removido com sucesso' };
+  }
+
+  @Patch('patient/deact/:id')
+  async deactivatePatient(PatientId: string) {
+    const patient = await this.patientService.findByCode(PatientId);
+    if (!patient) throw new NotFoundException('Paciente não encontrado');
+    patient.isActive = false;
+    await this.patientService.save(patient);
+    return patient;
   }
 }
