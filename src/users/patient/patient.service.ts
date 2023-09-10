@@ -66,7 +66,7 @@ export class PatientService {
     return this.patientRepository.save(patient);
   }
 
-  async findAll(){
+  async findAll() {
     return this.patientRepository.find();
   }
 

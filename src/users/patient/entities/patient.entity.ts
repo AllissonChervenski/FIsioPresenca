@@ -1,9 +1,4 @@
-
-import {
-  Entity,
-  OneToMany,
-  PrimaryColumn,
-} from 'typeorm';
+import { Entity, OneToMany, PrimaryColumn } from 'typeorm';
 import { Column } from 'typeorm/decorator/columns/Column';
 import { Confirmation } from '../../../confirmations/entities/confirmation.entity';
 
