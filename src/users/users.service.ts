@@ -81,13 +81,13 @@ export class UsersService {
   }
 
   async findAll(): Promise<RegisteredUsers[]> {
-    /*
     try {
       return this.userRepository.find();
     } catch (error) {
       throw new InternalServerErrorException('Falha ao buscar os usuários');
     }
-     */
+  }
+  /*
     try {
       return this.userRepository
         .createQueryBuilder('registered_users')
@@ -115,6 +115,8 @@ export class UsersService {
       throw new InternalServerErrorException('Falha ao buscar os usuários');
     }
   }
+
+     */
 
   async findOne(email: string): Promise<RegisteredUsers | undefined> {
     try {
@@ -204,6 +206,7 @@ export class UsersService {
     return hash;
   }
 
+  /*
   async getOneUserWithConfirmationsById(id: number): Promise<RegisteredUsers> {
     const user = await this.userRepository.findOne({
       where: { id },
@@ -217,10 +220,14 @@ export class UsersService {
     return user;
   }
 
+
+
   async getAllUserWithConfirmations(): Promise<RegisteredUsers[]> {
     return this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.confirmations', 'confirmation')
       .getMany();
   }
+
+   */
 }

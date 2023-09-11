@@ -13,6 +13,8 @@ import { UsersService } from './users.service';
 import { RegisteredUsers } from './entities/RegisteredUsers.entity';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PatientService } from './patient/patient.service';
+import { Patient } from './patient/entities/patient.entity';
+import { CreatePatientDto } from './patient/dto/create-patient.dto';
 
 @Controller('users')
 export class UserController {
@@ -26,17 +28,21 @@ export class UserController {
     return this.usersService.findAll();
   }
 
-  @Get('confirmations')
+  /*@Get('confirmations')
   async getAllUserWithConfirmations(): Promise<RegisteredUsers[]> {
     return this.usersService.getAllUserWithConfirmations();
   }
 
-  @Get(':user_id')
+   */
+
+  /* @Get(':user_id')
   async getOneUserWithConfirmationsById(
     @Param('user_id') id: number,
   ): Promise<RegisteredUsers> {
     return this.usersService.getOneUserWithConfirmationsById(id);
   }
+
+  */
 
   @Get(':email')
   async findOne(@Param('email') email: string): Promise<RegisteredUsers> {
@@ -60,6 +66,7 @@ export class UserController {
     return { message: 'Usuário removido com sucesso' };
   }
 
+  //Paciente
   @Patch('patient/deact/:id')
   async deactivatePatient(PatientId: string) {
     const patient = await this.patientService.findByCode(PatientId);
@@ -67,5 +74,78 @@ export class UserController {
     patient.isActive = false;
     await this.patientService.save(patient);
     return patient;
+  }
+
+  @Get('patient/date-of-birth/:dateOfBirth')
+  async findPatientByDateOfBirth(
+    @Param('dateOfBirth') dateOfBirth: string,
+  ): Promise<Patient[]> {
+    try {
+      return await this.patientService.findByDateOfBirth(dateOfBirth);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+  @Get('patient/cpf/:cpf')
+  async findPatientByCPF(@Param('cpf') cpf: string): Promise<Patient> {
+    try {
+      return await this.patientService.findByCPF(cpf);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Get('patient/name/:name')
+  async findPatientByName(@Param('name') name: string): Promise<Patient[]> {
+    try {
+      return await this.patientService.findByName(name);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Get('patient/cgm/:cgm')
+  async findPatientByCGM(@Param('cgm') cgm: string): Promise<Patient> {
+    try {
+      return await this.patientService.findByCGM(cgm);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Get('patient/card-sus/:cartaosus')
+  async findPatientByCardSus(
+    @Param('cartaosus') cartaosus: string,
+  ): Promise<Patient> {
+    try {
+      return await this.patientService.findByCardSus(cartaosus);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Post('patient/create')
+  async createPatient(
+    @Body() createPatientDto: CreatePatientDto,
+  ): Promise<Patient> {
+    return await this.patientService.createPatient(createPatientDto);
+  }
+
+  @Get('patient/code/:codigo')
+  async findPatientByCode(@Param('codigo') codigo: string): Promise<Patient> {
+    try {
+      return await this.patientService.findByCode(codigo);
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Get('/patient/all')
+  async findAllPatient(): Promise<Patient[]> {
+    try {
+      return await this.patientService.findAll();
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
   }
 }
