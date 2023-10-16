@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { Confirmation } from './entities/confirmation.entity';
 import { CreateConfirmationDto } from './dto/create-confirmation.dto';
 import { Patient } from '../users/patient/entities/patient.entity';
+import { Professional } from '../users/professional/entities/professional.entity';
 
 @Injectable()
 export class ConfirmationService {
@@ -19,19 +20,31 @@ export class ConfirmationService {
 
     @InjectRepository(Patient)
     private readonly patientRepository: Repository<Patient>,
+
+    @InjectRepository(Professional)
+    private readonly professionalRepository: Repository<Professional>,
   ) {}
 
   async createConfirmation(
     createConfirmationDto: CreateConfirmationDto,
   ): Promise<Confirmation> {
-    const { patientcode, ...confirmationData } = createConfirmationDto;
+    const { patientcode, professionalcode, ...confirmationData } =
+      createConfirmationDto;
+
+    const professional = await this.professionalRepository.findOne({
+      where: { cod: professionalcode },
+    });
 
     const user = await this.patientRepository.findOne({
       where: { codigo: patientcode },
     });
 
     if (!user) {
-      throw new NotFoundException('Usuário não encontrado');
+      throw new NotFoundException('Paciente não encontrado');
+    }
+
+    if (!professional) {
+      throw new NotFoundException('Profissional não encontrado');
     }
 
     const confirmation = this.confirmationRepository.create({
@@ -43,9 +56,8 @@ export class ConfirmationService {
         .insert()
         .into(Confirmation)
         .values({
-          patient: confirmation.patient,
+          patient: user,
           arrivaltime: confirmation.arrivaltime,
-          appointmenttime: confirmation.appointmenttime,
           confirmationstatus: confirmation.confirmationstatus,
           codigoProcedimento: confirmation.codigoProcedimento,
           motivoAtendimento: confirmation.motivoAtendimento,
@@ -57,6 +69,7 @@ export class ConfirmationService {
           enderecoUnidade: confirmation.enderecoUnidade,
           municipioUnidade: confirmation.municipioUnidade,
           ufUnidade: confirmation.ufUnidade,
+          professional: professional,
         })
         .execute();
 
@@ -80,14 +93,26 @@ export class ConfirmationService {
     return confirmation;
   }
 
+  async getConfirmationByDate(arrivaltime: Date) {
+    const confirmation = await this.confirmationRepository.findOne({
+      where: { arrivaltime },
+    });
+    if (!confirmation) {
+      throw new NotFoundException('Confirmação não encontrada');
+    }
+    return confirmation;
+  }
   async getAllConfirmations(): Promise<Confirmation[]> {
     try {
-      return this.confirmationRepository.find();
+      return this.confirmationRepository.find({
+        relations: ['patient', 'professional'],
+      });
     } catch (error) {
       throw new InternalServerErrorException('Falha ao buscar as confirmações');
     }
   }
 
+  /*
   async updateConfirmation(
     id: number,
     updateConfirmationDto: CreateConfirmationDto,
@@ -118,7 +143,7 @@ export class ConfirmationService {
       );
     }
   }
-
+*/
   async deleteConfirmation(id: number): Promise<void> {
     const confirmation = await this.confirmationRepository.findOne({
       where: { id },
@@ -127,16 +152,7 @@ export class ConfirmationService {
     if (!confirmation) {
       throw new NotFoundException('Confirmação não encontrada');
     }
-    const currentTime = new Date();
-    const appointmentTime = new Date(confirmation.appointmenttime);
-    const timeDifference = currentTime.getTime() - appointmentTime.getTime();
-    const minutesDifference = Math.floor(timeDifference / 1000 / 60);
 
-    if (minutesDifference <= 30) {
-      throw new ForbiddenException(
-        'Não é possível cancelar a confirmação com menos de 30 minutos de antecedência',
-      );
-    }
     try {
       await this.confirmationRepository.manager
         .createQueryBuilder()

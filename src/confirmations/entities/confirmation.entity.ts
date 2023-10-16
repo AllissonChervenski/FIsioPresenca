@@ -3,11 +3,11 @@ import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  ManyToMany,
-  JoinTable,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Patient } from '../../users/patient/entities/patient.entity';
+import { Professional } from '../../users/professional/entities/professional.entity';
 
 @Entity({ name: 'confirmation' })
 export class Confirmation {
@@ -35,11 +35,12 @@ export class Confirmation {
   @ManyToOne(() => Patient, (patient) => patient.confirmations)
   patient: Patient;
 
+  @ManyToOne(() => Professional, (professional) => professional.confirmations)
+  @JoinColumn({ name: 'professional_id' }) // Nome da coluna de chave estrangeira
+  professional: Professional;
+
   @Column({ name: 'arrival_time' })
   arrivaltime: Date;
-
-  @Column({ name: 'appointment_time' })
-  appointmenttime: Date;
 
   @Column({ name: 'confirmation_status' })
   confirmationstatus: boolean;

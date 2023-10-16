@@ -15,12 +15,16 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { PatientService } from './patient/patient.service';
 import { Patient } from './patient/entities/patient.entity';
 import { CreatePatientDto } from './patient/dto/create-patient.dto';
+import { Professional } from './professional/entities/professional.entity';
+import { CreateProfessionalDto } from './professional/dto/create-professional.dto';
+import { ProfessionalService } from './professional/professional.service';
 
 @Controller('users')
 export class UserController {
   constructor(
     private readonly usersService: UsersService,
     private readonly patientService: PatientService,
+    private readonly professionalService: ProfessionalService,
   ) {}
 
   @Get('all')
@@ -144,6 +148,24 @@ export class UserController {
   async findAllPatient(): Promise<Patient[]> {
     try {
       return await this.patientService.findAll();
+    } catch (error) {
+      throw new NotFoundException(error.message);
+    }
+  }
+
+  @Post('/professional/create')
+  async createProfessional(
+    @Body() createProfessionalDto: CreateProfessionalDto,
+  ): Promise<Professional> {
+    return await this.professionalService.createProfessional(
+      createProfessionalDto,
+    );
+  }
+
+  @Get('/professional/all')
+  async getAllProfessionals() {
+    try {
+      return await this.professionalService.getAllProfessionals();
     } catch (error) {
       throw new NotFoundException(error.message);
     }

@@ -9,10 +9,6 @@ export class CreateConfirmationDto {
   @IsNotEmpty()
   arrivaltime: Date;
 
-  @IsDateString()
-  @IsNotEmpty()
-  appointmenttime: Date;
-
   @IsBoolean()
   @IsNotEmpty()
   confirmationstatus: boolean;
@@ -48,6 +44,8 @@ export class CreateConfirmationDto {
   @IsString()
   diagnostico: string;
 
+  @IsNotEmpty()
+  professionalcode: number;
   /*
       Código da Tabela de Procedimentos
       Motivo do Atendimento

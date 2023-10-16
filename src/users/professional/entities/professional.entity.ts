@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToOne } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Confirmation } from '../../../confirmations/entities/confirmation.entity';
 
 @Entity({ name: 'profissional' })
 export class Professional {
@@ -16,6 +17,9 @@ export class Professional {
 
   @Column({ name: 'DESCRICAO', type: 'text' })
   descricao: string;
+
+  @OneToMany(() => Confirmation, (confirmations) => confirmations.professional)
+  confirmations: Confirmation[];
 
   /*
    @OneToOne(() => RegisteredUsers)

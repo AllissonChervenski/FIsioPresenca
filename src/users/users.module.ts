@@ -13,6 +13,8 @@ import { Professional } from './professional/entities/professional.entity';
 import { Patient } from './patient/entities/patient.entity';
 import { PatientModule } from './patient/patient.module';
 import { PatientService } from './patient/patient.service';
+import { ProfessionalService } from './professional/professional.service';
+
 
 @Module({
   imports: [
@@ -32,6 +34,7 @@ import { PatientService } from './patient/patient.service';
   providers: [
     UsersService,
     PatientService,
+    ProfessionalService,
     AuthService,
     JwtStrategy,
     Repository,

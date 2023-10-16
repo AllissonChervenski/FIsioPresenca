@@ -38,7 +38,7 @@ export class ConfirmationController {
   }
 
   //@UseGuards(AuthGuard('jwt'))
-  @Put(':id')
+  /*  @Put(':id')
   async updateConfirmation(
     @Param('id') id: number,
     @Body() updateConfirmationDto: CreateConfirmationDto,
@@ -48,6 +48,7 @@ export class ConfirmationController {
       updateConfirmationDto,
     );
   }
+*/
 
   //@UseGuards(AuthGuard('jwt'))
   @Delete(':id')
