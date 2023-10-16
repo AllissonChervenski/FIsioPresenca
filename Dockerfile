@@ -1,8 +1,3 @@
-FROM ubuntu:latest
-LABEL authors="allisson"
-
-ENTRYPOINT ["top", "-b"]
-
 FROM postgres:latest
 
 ENV POSTGRES_USER=user
