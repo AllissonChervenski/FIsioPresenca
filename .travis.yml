@@ -2,7 +2,14 @@ language: node_js
 node_js:
   - "16.14.2"
 
+services:
+  - docker
+
+before_script:
+  - docker pull postgres:latest
+
 script:
+  - docker run -d -p 5432:5432 my-database
   - npm install
   - npm run build
   - npm run start:prod
