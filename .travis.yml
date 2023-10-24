@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "16.14.2"
+  - '16.14.2'
 
 services:
   - docker
@@ -9,7 +9,7 @@ before_script:
   - docker pull mysql:latest
 
 script:
-  - docker run -d -p 3307:3307 my-database
+  - docker run -d -p 3307:3307 mysql
   - npm install
   - npm run build
   - npm run start:prod

@@ -15,8 +15,8 @@ import { ProfessionalModule } from '../users/professional/professional.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 3307,
+      host: 'mysql',
+      port: 3306,
       username: 'user',
       password: 'user',
       database: 'cerestdb',
