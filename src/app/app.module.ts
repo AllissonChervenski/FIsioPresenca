@@ -15,13 +15,19 @@ import { ProfessionalModule } from '../users/professional/professional.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'mysql',
+      host: '172.18.0.2',
       port: 3306,
       username: 'user',
       password: 'user',
       database: 'cerestdb',
       entities: [RegisteredUsers, Confirmation, Patient, Professional],
       synchronize: true,
+      extra: {
+        poolSize: 20,
+        connectionTimeoutMillis: 10000,
+        query_timeout: 10000,
+        statement_timeout: 10000,
+      }, // 5 seconds
     }),
     UsersModule,
     ConfirmationModule,

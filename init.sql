@@ -2727,7 +2727,17 @@ LOCK TABLES `zelador` WRITE;
 /*!40000 ALTER TABLE `zelador` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+CREATE USER IF NOT EXISTS 'user'@'localhost' IDENTIFIED BY 'user';
+GRANT ALL PRIVILEGES ON cerestdb.* TO 'user'@'localhost';
 
+ALTER USER 'user'@'localhost' IDENTIFIED WITH mysql_native_password BY 'user';
+ALTER USER 'user'@'%' IDENTIFIED WITH mysql_native_password BY 'user';
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'root';
+GRANT ALL PRIVILEGES ON *.* TO 'user'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
