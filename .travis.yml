@@ -1,3 +1,6 @@
+env:
+  global:
+    - BUILD_TIMEOUT=300 # Define um limite de 10 minutos para todo o build
 language: node_js
 node_js:
   - '16.14.2'
@@ -16,3 +19,9 @@ script:
   - npm install
   - npm run build
   - npm run start:prod
+
+after_script:
+  - |
+    if [ $SECONDS -gt $BUILD_TIMEOUT ]; then
+      travis_terminate 1  # Termina o build com código de erro 1
+    fi
