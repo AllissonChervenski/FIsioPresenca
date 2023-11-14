@@ -15,7 +15,7 @@ import { ProfessionalModule } from '../users/professional/professional.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: '172.18.0.2',
+      host: '172.17.0.2',
       port: 3306,
       username: 'user',
       password: 'user',
