@@ -2,13 +2,7 @@ FROM node:16.14.2
 
 WORKDIR /
 
-COPY package*.json ./
-
-COPY tsconfig*.json ./
-
-COPY /dist/app ./dist/app
-
-COPY /src ./src
+COPY . .
 
 RUN npm install 
 
