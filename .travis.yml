@@ -16,8 +16,4 @@ script:
   - docker build -t mysql:latest -f Dockerfile.mysql .
   - docker build -t server:latest -f Dockerfile.server .
   - docker run -d -p 3306:3306 mysql:latest
-  - npm install
-  - npm run build
-  - npm run start:prod
-
-after_script:
+  - docker run -d -p 3000:3000 server:latest
